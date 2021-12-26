@@ -8,31 +8,41 @@ use process_control::{ChildExt,Timeout,Output};
 use crate::model::container::{RuntimeSettings};
 use crate::util::configuration::{get_container_settings};
 
+pub struct CodeExtraction {
+    pub code: Option<String>,
+    pub args: Option<String>
+}
+
 /// Extracts source code from a command message.
 /// If no code is extractable, None is returned
 /// Otherwise, you will get Some string
-pub fn extract_code(text: &String) -> Option<String> {
+pub fn extract_code(text: &String) -> Option<CodeExtraction> {
     // <begin rant>
     // The regex I want to use is (?<=```)(rs|.*)((.|\n)*)(?=```)
     // but no lookahead or lookbehind support in rust's regex lib
     // which is TRASH (kidding)
     //
-    // The regex I'm stuck with is (```)(rs|.*)((.|\n)*)(```) which
+    // The regex I'm stuck with is !run(.*)\n```(rs|.*)((.|\n)*)``` which
     // would require more massaging after processing.
     // it will have to do until the regex maintainers realize that
     // these "feature limitations" put rust's regex engine on par
     // with the same one used in the Safari web browser (also trash)
     // </end rant>
-    let re = Regex::new(r"(```)(rs|.*)((.|\n)*)(```)").unwrap();
-    let captures = re.captures(text);
+    let re = Regex::new(r"!run(.*)\n```(rs|.*)((.|\n)*)```").unwrap();
+    let captures_opt = re.captures(text);
 
-    if captures.is_none() {
-        // No matches found, return none
+    if captures_opt.is_none() {
         return None;
     }
+
     // Have matches, return some
-    let code_capture = captures.unwrap().get(3);
-    return code_capture.map(|m| String::from(m.as_str()));
+    let captures = captures_opt.unwrap();
+    let argument_capture = captures.get(1);
+    let code_capture = captures.get(3);
+    return Some(CodeExtraction {
+        code: code_capture.map(|m| String::from(m.as_str())),
+        args: argument_capture.map(|m| String::from(m.as_str()))
+    });
 }
 
 /// Builds a command to invoke our container with a command (cmd)

@@ -2,10 +2,18 @@
  
 # Trampoline utility for decoding b64 commands and running them
 
-# Decomde command from args 
-cmd_base64=$1
-cmd_decoded=$(echo ${cmd_base64} | base64 -d)
+# USAGE: trampoline [code] [args]
+# where
+#   [code]   = base64 encoded code to be run
+#   [args]   = base64 args to run with code
 
-# Construct program and run it with runner
+# Decode command from args 
+cmd_base64=$1
+args_base64=$2
+
+cmd_decoded=$(echo ${cmd_base64} | base64 -d)
+args_decoded=$(echo ${args_base64} | base64 -d)
+
+# Construct program and run it depending on what [action] is provided
 echo $cmd_decoded > program.rs
-runner program.rs
+runner program.rs $args_decoded

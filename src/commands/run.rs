@@ -1,6 +1,3 @@
-/// 
-/// The fun part of this project, the command runner
-/// 
 use std::io::ErrorKind::{TimedOut};
 use serenity::framework::standard::macros::{command};
 use serenity::model::prelude::{Message};
@@ -34,8 +31,9 @@ pub async fn run(ctx: &Context, msg: &Message) -> CommandResult {
 
             // With the code matched, we have to b64 encode it to be sent to the container
             // the `payload` will then be encoded and decoded inside the container in a similar fashion to the original ShellBot
-            let encoded = base64::encode(c);
-            let payload = build_container_command(format!("trampoline {}", encoded).as_str());
+            let encoded_program = base64::encode(c.code.unwrap_or(String::from("")));
+            let encoded_args = base64::encode(c.args.unwrap_or(String::from("")));
+            let payload = build_container_command(format!("trampoline {} {}", encoded_program, encoded_args).as_str());
 
             let cmd_result = run_command_with_timeout(payload.as_str(), get_container_runtime()).await;
 
