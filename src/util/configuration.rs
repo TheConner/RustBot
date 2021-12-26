@@ -2,11 +2,11 @@
 /// The idea behind this is this design can easily be adapted to hook up to a database for multitenancy
 use std::{env};
 use cached::proc_macro::cached;
-
 use crate::constants::*;
-
 use crate::model::container::{ContainerSettings};
 
+/// Gets a environment configuration string value with a given key
+/// If no value is found in environment variables, return default value
 fn get_str_config_with_default(key: &str, default: &str)-> String {
     let conf = env::var(key);
     match conf {
@@ -15,6 +15,8 @@ fn get_str_config_with_default(key: &str, default: &str)-> String {
     };
 }
 
+/// Gets a environment configuration int value with a given key
+/// If no value is found in environment variables, return default value
 fn get_u64_config_with_default(key: &str, default: u64) -> u64 {
     let conf = env::var(key);
     match conf {
@@ -28,6 +30,10 @@ fn get_u64_config_with_default(key: &str, default: u64) -> u64 {
         Err(_e) => return default,
     }
 }
+
+/// maybe abstract all this as a struct, provide trait/impl methods to access various fields?
+/// this way I don't have to make a method for each field
+/// ... or maybe that's just overengineered here
 
 #[cached]
 pub fn get_bot_prefix() -> String {

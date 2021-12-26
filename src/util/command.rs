@@ -35,9 +35,7 @@ pub fn extract_code(text: &String) -> Option<String> {
     return code_capture.map(|m| String::from(m.as_str()));
 }
 
-///
 /// Builds a command to invoke our container with a command (cmd)
-/// 
 pub fn build_container_command(cmd: &str) -> String {
     let container_settings = get_container_settings();
     return format!("podman run {} rustbot:latest {}", 

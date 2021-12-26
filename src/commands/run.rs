@@ -11,7 +11,7 @@ use rustbot::util::command::{run_command_with_timeout, extract_code, build_conta
 use rustbot::util::template_reader::{template_reader};
 use rustbot::constants::{CHECK_MARK_EMOJI, CROSS_MARK_EMOJI, HAMMER_EMOJI};
 
-// Given some stdout or stderr data, format it so that it can be rendered by discord
+/// Given some stdout or stderr data, format it so that it can be rendered by discord
 fn response_formatter(response: String) -> String {
     if response.len() < 1990 {
         // Response falls within size constraints 
