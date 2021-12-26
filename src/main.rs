@@ -14,6 +14,7 @@ use rustbot::util::configuration::*;
 mod commands;
 use commands::ping::*;
 use commands::run::*;
+use commands::help::*;
 
 pub struct ShardManagerContainer;
 
@@ -35,7 +36,7 @@ impl EventHandler for Handler {
 }
 
 #[group]
-#[commands(ping,run)]
+#[commands(ping,run,help)]
 struct General;
 
 #[tokio::main]

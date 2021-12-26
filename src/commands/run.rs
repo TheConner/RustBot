@@ -9,7 +9,7 @@ use serenity::framework::standard::{CommandResult};
 use rustbot::util::configuration::{get_container_runtime};
 use rustbot::util::command::{run_command_with_timeout, extract_code, build_container_command};
 use rustbot::util::template_reader::{template_reader};
-use rustbot::constants::{CHECK_MARK_EMOJI, CROSS_MARK_EMOJI, HAMMER_EMOJI};
+use rustbot::constants::{CHECK_MARK_EMOJI, CROSS_MARK_EMOJI, HAMMER_EMOJI, CLOCK_EMOJI};
 
 /// Given some stdout or stderr data, format it so that it can be rendered by discord
 fn response_formatter(response: String) -> String {
@@ -36,8 +36,6 @@ pub async fn run(ctx: &Context, msg: &Message) -> CommandResult {
             // the `payload` will then be encoded and decoded inside the container in a similar fashion to the original ShellBot
             let encoded = base64::encode(c);
             let payload = build_container_command(format!("trampoline {}", encoded).as_str());
-
-            println!("{}", payload);
 
             let cmd_result = run_command_with_timeout(payload.as_str(), get_container_runtime()).await;
 
@@ -80,6 +78,7 @@ pub async fn run(ctx: &Context, msg: &Message) -> CommandResult {
                             // Took too long to run, complain to user
                             let response = template_reader("run_error_too_long");
                             msg.react(ctx, CROSS_MARK_EMOJI).await?;
+                            msg.react(ctx, CLOCK_EMOJI).await?;
                             msg.reply(ctx, response).await?;
 
                         },
