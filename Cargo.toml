@@ -1,0 +1,19 @@
+[package]
+name = "rustbot"
+authors = [ "Conner Bradley <bradley@advtech.ca>" ]
+version = "0.1.0"
+edition = "2021"
+
+[lib]
+name = "rustbot"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+tokio = { version = "1.0", features = ["macros", "signal", "rt-multi-thread"] }
+dotenv = { version = "0.15.0" }
+serenity = "0.10.9"
+regex = "1.5.4"
+base64 = "0.13.0"
+process_control = "3.1"
+cached = "0.26.2"

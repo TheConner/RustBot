@@ -1,0 +1,11 @@
+#!/bin/bash
+ 
+# Trampoline utility for decoding b64 commands and running them
+
+# Decomde command from args 
+cmd_base64=$1
+cmd_decoded=$(echo ${cmd_base64} | base64 -d)
+
+# Construct program and run it with runner
+echo $cmd_decoded > program.rs
+runner program.rs
