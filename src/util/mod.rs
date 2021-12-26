@@ -1,3 +1,3 @@
 pub mod configuration;
-pub mod template_reader;
+pub mod template;
 pub mod command;

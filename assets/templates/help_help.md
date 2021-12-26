@@ -1,0 +1,1 @@
+The help command will show a general list of commands if no command is provided. If you want to learn about a specific command, enter the command name without the prefix. For example, If you want to learn about the `help` command, enter `!help help`.

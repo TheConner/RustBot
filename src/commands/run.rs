@@ -8,7 +8,7 @@ use serenity::prelude::{Context};
 use serenity::framework::standard::{CommandResult};
 use rustbot::util::configuration::{get_container_runtime};
 use rustbot::util::command::{run_command_with_timeout, extract_code, build_container_command};
-use rustbot::util::template_reader::{template_reader};
+use rustbot::util::template::{template_reader};
 use rustbot::constants::{CHECK_MARK_EMOJI, CROSS_MARK_EMOJI, HAMMER_EMOJI, CLOCK_EMOJI};
 
 /// Given some stdout or stderr data, format it so that it can be rendered by discord
@@ -61,25 +61,25 @@ pub async fn run(ctx: &Context, msg: &Message) -> CommandResult {
                     // Check to see if the response was nothing
                     if stdout.len() == 0 && stderr.len() == 0 {
                         // No stdout or stderr
-                        msg.react(ctx, CHECK_MARK_EMOJI).await?;
-                        msg.reply(ctx, template_reader("run_no_output")).await?;
+                        msg.react(&ctx, CHECK_MARK_EMOJI).await?;
+                        msg.reply(&ctx, template_reader("run_no_output").expect("Could not read template run_no_output")).await?;
                     } else if stdout.len() == 0 && stderr.len() > 0 {
                         // Had stderr, no stdout
-                        msg.react(ctx, CROSS_MARK_EMOJI).await?;
-                        msg.reply(ctx, response_formatter(stderr)).await?;
+                        msg.react(&ctx, CROSS_MARK_EMOJI).await?;
+                        msg.reply(&ctx, response_formatter(stderr)).await?;
                     } else {
-                        msg.react(ctx, CHECK_MARK_EMOJI).await?;
-                        msg.reply(ctx, response_formatter(stdout)).await?;
+                        msg.react(&ctx, CHECK_MARK_EMOJI).await?;
+                        msg.reply(&ctx, response_formatter(stdout)).await?;
                     }
                 },
                 Err(error) => { // TODO: find out ways this can blow up
                     match error.kind() {
                         TimedOut => {
                             // Took too long to run, complain to user
-                            let response = template_reader("run_error_too_long");
-                            msg.react(ctx, CROSS_MARK_EMOJI).await?;
-                            msg.react(ctx, CLOCK_EMOJI).await?;
-                            msg.reply(ctx, response).await?;
+                            let response = template_reader("run_error_too_long").expect("Could not read template run_error_too_long");
+                            msg.react(&ctx, CROSS_MARK_EMOJI).await?;
+                            msg.react(&ctx, CLOCK_EMOJI).await?;
+                            msg.reply(&ctx, response).await?;
 
                         },
                         _ => {
@@ -93,7 +93,7 @@ pub async fn run(ctx: &Context, msg: &Message) -> CommandResult {
         None => {
             // No code matched
             // show the help text
-            let response = template_reader("help_running");
+            let response = template_reader("help_running").expect("Could not read template help_running");
             msg.react(ctx, CROSS_MARK_EMOJI).await?;
             msg.reply(ctx, response).await?;
         },
