@@ -7,9 +7,13 @@ fn main() {
     println!("Base dir {}", base_dir);
     let profile = env::var("PROFILE").unwrap();
     println!("Profile {}", profile);
-    let template_dir = Path::new(&base_dir)
-        .join("target")
-        .join(profile)
+    
+    let release_dir = Path::new(&base_dir)
+    .join("target")
+    .join(profile); 
+    println!("Release dir {}", release_dir.to_str().unwrap());
+
+    let template_dir = release_dir
         .join("assets");
     println!("Create output dir {}", template_dir.to_str().unwrap());
     // create output directory for build
@@ -21,6 +25,17 @@ fn main() {
     // copy container assets to output directory
     Command::new("cp")
         .args(&["-r", "assets/templates", template_dir.to_str().unwrap()])
+        .status()
+        .unwrap();
+
+    // Copy licenses 
+    Command::new("cp")
+        .args(&["LICENSE-MIT", release_dir.to_str().unwrap()])
+        .status()
+        .unwrap();
+
+    Command::new("cp")
+        .args(&["LICENSE-APACHE", release_dir.to_str().unwrap()])
         .status()
         .unwrap();
 }

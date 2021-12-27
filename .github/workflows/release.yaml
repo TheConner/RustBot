@@ -27,3 +27,4 @@ jobs:
           path: |
             target/release/*rustbot*
             target/release/assets/*
+            LICENSE*
