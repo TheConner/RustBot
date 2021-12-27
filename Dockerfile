@@ -1,7 +1,7 @@
 #
 # RustBot Docker Image
 #
-FROM rust:latest 
+FROM rust:alpine
 
 # Need the rust runner utility
 RUN cargo install runner
