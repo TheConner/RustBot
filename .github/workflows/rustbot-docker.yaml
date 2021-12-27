@@ -1,4 +1,4 @@
-name: Build RustBot runner docker image
+name: Build RustBot Runner docker image
 
 on:   
   push:
@@ -9,7 +9,7 @@ on:
   pull_request:
 
 env:
-  IMAGE_NAME: ghtoken_product_demo
+  IMAGE_NAME: rustbot-runner
 
 jobs:
   # Push image to GitHub Packages.
