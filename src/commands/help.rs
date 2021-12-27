@@ -7,6 +7,8 @@ use serenity::framework::standard::CommandResult;
 use serenity::model::prelude::Message;
 use serenity::prelude::Context;
 
+///
+/// Shows a generic help response
 async fn show_generic_help(ctx: &Context, msg: &Message, bot_prefix: String) -> CommandResult {
     // Show regular help
     let msg = msg.channel_id.send_message(&ctx.http, |m| {

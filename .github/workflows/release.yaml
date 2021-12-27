@@ -9,7 +9,7 @@ jobs:
   release:
     name: Release Packaging
     env:
-      PROJECT_NAME_UNDERSCORE: rust_ci_github_actions_workflow
+      PROJECT_NAME_UNDERSCORE: rustbot
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
@@ -24,4 +24,6 @@ jobs:
         uses: actions/upload-artifact@v2
         with:
           name: ${{ env.PROJECT_NAME_UNDERSCORE }}
-          path: target/release/${{ env.PROJECT_NAME_UNDERSCORE }}
+          path: |
+            target/release/*rustbot*
+            target/release/assets/*
