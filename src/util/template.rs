@@ -2,6 +2,8 @@ use cached::proc_macro::cached;
 use std::fs;
 use std::path::Path;
 
+use tracing::{info};
+
 /// TODO:
 /// - Template caching [DONE / WIP]
 /// - Template variable injection
@@ -16,7 +18,7 @@ fn get_template_path(template_name: &str) -> String {
 /// Returns the template content as a string
 #[cached]
 fn read_template(template_name: String) -> String {
-    println!("Reading template {}", template_name);
+    info!("Reading template {}", template_name);
     let path = get_template_path(template_name.as_str());
     let data = fs::read_to_string(path).expect("Unable to read file");
     return data;

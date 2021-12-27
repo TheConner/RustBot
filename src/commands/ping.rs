@@ -8,8 +8,11 @@ use serenity::prelude::Context;
 
 use rustbot::constants::CHECK_MARK_EMOJI;
 
+use tracing::{info};
+
 #[command]
 pub async fn ping(ctx: &Context, msg: &Message) -> CommandResult {
+    info!("PING command from {}", msg.author.name);
     msg.react(&ctx.http, CHECK_MARK_EMOJI).await?;
     msg.channel_id.say(&ctx.http, "PONG").await?;
     Ok(())

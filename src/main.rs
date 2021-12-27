@@ -7,9 +7,11 @@ use serenity::{
     model::{event::ResumedEvent, gateway::Ready},
     prelude::*,
 };
-use std::{collections::HashSet, sync::Arc};
+use tracing::{error, info, instrument};
+use std::{collections::HashSet, sync::Arc, process};
 
 use rustbot::util::configuration::*;
+use rustbot::constants::{ENV_BOT_TOKEN};
 
 mod commands;
 use commands::help::*;
@@ -27,11 +29,11 @@ struct Handler;
 #[async_trait]
 impl EventHandler for Handler {
     async fn ready(&self, _: Context, ready: Ready) {
-        println!("Connected as {}", ready.user.name);
+        info!("Connected as {}", ready.user.name);
     }
 
     async fn resume(&self, _: Context, _: ResumedEvent) {
-        println!("Resumed");
+        info!("Resumed");
     }
 }
 
@@ -40,7 +42,11 @@ impl EventHandler for Handler {
 struct General;
 
 #[tokio::main]
+#[instrument]
 async fn main() {
+    tracing_subscriber::fmt::init();
+    info!("RustBot: starting up");
+
     // This will load the environment variables located at `./.env`, relative to
     // the CWD. See `./.env.example` for an example on how to structure this.
     dotenv::dotenv().ok();
@@ -52,6 +58,11 @@ async fn main() {
     //tracing_subscriber::fmt::init();
 
     let token = get_bot_token();
+
+    if token.is_empty() {
+        error!("ERROR: no token provided! Please set the {} environment variable", ENV_BOT_TOKEN);
+        process::exit(0x0100);
+    }
 
     let http = Http::new_with_token(&token);
 
@@ -91,6 +102,6 @@ async fn main() {
     });
 
     if let Err(why) = client.start().await {
-        println!("Client error: {:?}", why);
+        error!("Client error: {:?}", why);
     }
 }

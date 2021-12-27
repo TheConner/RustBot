@@ -7,9 +7,12 @@ use serenity::framework::standard::CommandResult;
 use serenity::model::prelude::Message;
 use serenity::prelude::Context;
 
+use tracing::{debug, error, info};
+
 ///
 /// Shows a generic help response
 async fn show_generic_help(ctx: &Context, msg: &Message, bot_prefix: String) -> CommandResult {
+    info!("Responding with generic help embed");
     // Show regular help
     let msg = msg.channel_id.send_message(&ctx.http, |m| {
         m.embed(|e| {
@@ -34,8 +37,9 @@ async fn show_generic_help(ctx: &Context, msg: &Message, bot_prefix: String) -> 
 
 #[command]
 pub async fn help(ctx: &Context, msg: &Message) -> CommandResult {
-    let bot_prefix = get_bot_prefix();
+    info!("PING command from {}", msg.author.name);
 
+    let bot_prefix = get_bot_prefix();
     let re = Regex::new(r"!help (.*)").unwrap();
     // input: "!help run"
     // matches whole string
@@ -48,7 +52,7 @@ pub async fn help(ctx: &Context, msg: &Message) -> CommandResult {
                 Some(cmd) => {
                     // We have a command to show help for
                     let cmd_help = template_reader(format!("help_{}", cmd).as_str());
-
+                    info!("Rendering help for {}", cmd);
                     match cmd_help {
                         Some(help_text) => {
                             // Render help text
@@ -69,6 +73,7 @@ pub async fn help(ctx: &Context, msg: &Message) -> CommandResult {
                             }
                         }
                         None => {
+                            error!("Could not find information for command {}", cmd);
                             msg.reply(
                                 &ctx.http,
                                 "Sorry, I could not find help information for that command.",

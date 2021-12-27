@@ -7,6 +7,7 @@ use serenity::framework::standard::CommandResult;
 use serenity::model::prelude::Message;
 use serenity::prelude::Context;
 use std::io::ErrorKind::TimedOut;
+use tracing::{debug, error, info};
 
 /// Given some stdout or stderr data, format it so that it can be rendered by discord
 fn response_formatter(response: String) -> String {
@@ -23,7 +24,8 @@ fn response_formatter(response: String) -> String {
 #[command]
 pub async fn run(ctx: &Context, msg: &Message) -> CommandResult {
     let code = extract_code(&msg.content);
-
+    let code_author = &msg.author.name;
+    info!("Running message from {}", msg.author.name);
     // TODO: tidy this up
     match code {
         Some(c) => {
@@ -36,6 +38,8 @@ pub async fn run(ctx: &Context, msg: &Message) -> CommandResult {
             let payload = build_container_command(
                 format!("trampoline {} {}", encoded_program, encoded_args).as_str(),
             );
+
+            debug!("Trampoline Payload \"{}\"", payload);
 
             let cmd_result =
                 run_command_with_timeout(payload.as_str(), get_container_runtime()).await;
@@ -50,6 +54,8 @@ pub async fn run(ctx: &Context, msg: &Message) -> CommandResult {
                             Ok(v) => v,
                             Err(e) => panic!("Invalid UTF-8 sequence: {}", e),
                         };
+
+                        debug!("Got stdout");
                     }
 
                     if output.stderr.len() > 0 {
@@ -57,6 +63,7 @@ pub async fn run(ctx: &Context, msg: &Message) -> CommandResult {
                             Ok(v) => v,
                             Err(e) => panic!("Invalid UTF-8 sequence: {}", e),
                         };
+                        debug!("Got stderr \"{}\"", stderr);
                     }
 
                     // Check to see if the response was nothing
@@ -80,6 +87,7 @@ pub async fn run(ctx: &Context, msg: &Message) -> CommandResult {
                 }
                 Err(error) => {
                     // TODO: find out ways this can blow up
+                    info!("TIMEOUT on {}'s code", code_author);
                     match error.kind() {
                         TimedOut => {
                             // Took too long to run, complain to user
@@ -91,13 +99,14 @@ pub async fn run(ctx: &Context, msg: &Message) -> CommandResult {
                         }
                         _ => {
                             msg.react(ctx, CROSS_MARK_EMOJI).await?;
-                            println!("Handled error {}", error)
+                            info!("Handled error {}", error)
                         }
                     }
                 }
             }
         }
         None => {
+            info!("NO CODE MATCH on {}'s message", code_author);
             // No code matched
             // show the help text
             let response =
