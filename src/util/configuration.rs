@@ -1,13 +1,13 @@
+use crate::constants::*;
+use crate::model::container::ContainerSettings;
+use cached::proc_macro::cached;
 /// Configuration management for various settings
 /// The idea behind this is this design can easily be adapted to hook up to a database for multitenancy
-use std::{env};
-use cached::proc_macro::cached;
-use crate::constants::*;
-use crate::model::container::{ContainerSettings};
+use std::env;
 
 /// Gets a environment configuration string value with a given key
 /// If no value is found in environment variables, return default value
-fn get_str_config_with_default(key: &str, default: &str)-> String {
+fn get_str_config_with_default(key: &str, default: &str) -> String {
     let conf = env::var(key);
     match conf {
         Ok(val) => return val,
@@ -26,7 +26,7 @@ fn get_u64_config_with_default(key: &str, default: u64) -> u64 {
                 Ok(v) => return v,
                 Err(_e) => return default,
             };
-        },
+        }
         Err(_e) => return default,
     }
 }
@@ -55,6 +55,6 @@ pub fn get_container_settings() -> ContainerSettings {
     return ContainerSettings {
         cpu: get_str_config_with_default(ENV_CONTAINER_CPU, DEFAULT_CONTAINER_CPU),
         memory: get_str_config_with_default(ENV_CONTAINER_MEMORY, DEFAULT_CONTAINER_MEMORY),
-        swap: get_str_config_with_default(ENV_CONTAINER_SWAP, DEFAULT_CONTAINER_SWAP)
+        swap: get_str_config_with_default(ENV_CONTAINER_SWAP, DEFAULT_CONTAINER_SWAP),
     };
 }

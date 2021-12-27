@@ -3,7 +3,7 @@
 pub struct ContainerSettings {
     pub cpu: String,
     pub memory: String,
-    pub swap: String
+    pub swap: String,
 }
 
 pub trait RuntimeSettings {

@@ -1,12 +1,12 @@
 ///
 /// Boring ping command for sanity testing
-/// 
-use serenity::framework::standard::macros::{command};
-use serenity::model::prelude::{Message};
-use serenity::prelude::{Context};
-use serenity::framework::standard::{CommandResult};
+///
+use serenity::framework::standard::macros::command;
+use serenity::framework::standard::CommandResult;
+use serenity::model::prelude::Message;
+use serenity::prelude::Context;
 
-use rustbot::constants::{CHECK_MARK_EMOJI};
+use rustbot::constants::CHECK_MARK_EMOJI;
 
 #[command]
 pub async fn ping(ctx: &Context, msg: &Message) -> CommandResult {

@@ -1,16 +1,16 @@
+use crate::model::container::RuntimeSettings;
+use crate::util::configuration::get_container_settings;
+use process_control::{ChildExt, Output, Timeout};
+use regex::Regex;
 use std::io;
 use std::io::Error;
 use std::process::Command;
 use std::process::Stdio;
 use std::time::Duration;
-use regex::Regex;
-use process_control::{ChildExt,Timeout,Output};
-use crate::model::container::{RuntimeSettings};
-use crate::util::configuration::{get_container_settings};
 
 pub struct CodeExtraction {
     pub code: Option<String>,
-    pub args: Option<String>
+    pub args: Option<String>,
 }
 
 /// Extracts source code from a command message.
@@ -41,21 +41,24 @@ pub fn extract_code(text: &String) -> Option<CodeExtraction> {
     let code_capture = captures.get(3);
     return Some(CodeExtraction {
         code: code_capture.map(|m| String::from(m.as_str())),
-        args: argument_capture.map(|m| String::from(m.as_str()))
+        args: argument_capture.map(|m| String::from(m.as_str())),
     });
 }
 
 /// Builds a command to invoke our container with a command (cmd)
 pub fn build_container_command(cmd: &str) -> String {
     let container_settings = get_container_settings();
-    return format!("podman run {} rustbot:latest {}", 
-    container_settings.generate_runtime_flags(), cmd);
+    return format!(
+        "podman run {} rustbot:latest {}",
+        container_settings.generate_runtime_flags(),
+        cmd
+    );
 }
 
 /// Provides a uniform way of running a command with a timeout
 pub async fn run_command_with_timeout(cmd: &str, timeout: u64) -> Result<Output, Error> {
-    // Because std::command does not give me the ability to override / modify 
-    // how arguments are escaped I have to do some stupid hack to make this 
+    // Because std::command does not give me the ability to override / modify
+    // how arguments are escaped I have to do some stupid hack to make this
     // work. For example, if I wanted to run
     // podman run rustbot:latest ls -al
     // this would be impossible if I did
@@ -65,9 +68,9 @@ pub async fn run_command_with_timeout(cmd: &str, timeout: u64) -> Result<Output,
     //    .output()
     //    .expect("failed to invoke container");
     //
-    // As the ls -al would be quoted, and the container would try to execute 
-    // `ls -al` which would fail. The alternative is to seperate "ls", "-al" 
-    // which would also fail as the container would run `ls` then `-al` 
+    // As the ls -al would be quoted, and the container would try to execute
+    // `ls -al` which would fail. The alternative is to seperate "ls", "-al"
+    // which would also fail as the container would run `ls` then `-al`
     // ... what a stupid design
     // So instead of embracing the safety this API gives you, i'm just invoking
     // a shell with a payload I deem as safe
@@ -77,14 +80,12 @@ pub async fn run_command_with_timeout(cmd: &str, timeout: u64) -> Result<Output,
         .stderr(Stdio::piped())
         .spawn()
         .unwrap();
-    
+
     let output = process
         .with_output_timeout(Duration::from_millis(timeout))
         .terminating()
         .wait()?
-        .ok_or_else(|| {
-            io::Error::new(io::ErrorKind::TimedOut, "Process timed out")
-        })?;
+        .ok_or_else(|| io::Error::new(io::ErrorKind::TimedOut, "Process timed out"))?;
 
     return Ok(output);
 }

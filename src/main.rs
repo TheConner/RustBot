@@ -1,5 +1,4 @@
 // RustBot main entry point
-use std::{collections::HashSet, sync::Arc};
 use serenity::{
     async_trait,
     client::bridge::gateway::ShardManager,
@@ -8,13 +7,14 @@ use serenity::{
     model::{event::ResumedEvent, gateway::Ready},
     prelude::*,
 };
+use std::{collections::HashSet, sync::Arc};
 
 use rustbot::util::configuration::*;
 
 mod commands;
+use commands::help::*;
 use commands::ping::*;
 use commands::run::*;
-use commands::help::*;
 
 pub struct ShardManagerContainer;
 
@@ -36,7 +36,7 @@ impl EventHandler for Handler {
 }
 
 #[group]
-#[commands(ping,run,help)]
+#[commands(ping, run, help)]
 struct General;
 
 #[tokio::main]

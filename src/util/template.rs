@@ -1,6 +1,6 @@
+use cached::proc_macro::cached;
 use std::fs;
 use std::path::Path;
-use cached::proc_macro::cached;
 
 /// TODO:
 /// - Template caching [DONE / WIP]

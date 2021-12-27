@@ -1,3 +1,3 @@
+pub mod command;
 pub mod configuration;
 pub mod template;
-pub mod command;
