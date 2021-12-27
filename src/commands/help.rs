@@ -7,7 +7,7 @@ use serenity::framework::standard::CommandResult;
 use serenity::model::prelude::Message;
 use serenity::prelude::Context;
 
-use tracing::{debug, error, info};
+use tracing::{error, info};
 
 ///
 /// Shows a generic help response
@@ -29,7 +29,7 @@ async fn show_generic_help(ctx: &Context, msg: &Message, bot_prefix: String) -> 
     })
     .await;
     if let Err(why) = msg {
-        println!("Error sending message: {:?}", why);
+        error!("Error sending message: {:?}", why);
     }
 
     Ok(())

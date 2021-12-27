@@ -7,11 +7,11 @@ use serenity::{
     model::{event::ResumedEvent, gateway::Ready},
     prelude::*,
 };
+use std::{collections::HashSet, process, sync::Arc};
 use tracing::{error, info, instrument};
-use std::{collections::HashSet, sync::Arc, process};
 
+use rustbot::constants::ENV_BOT_TOKEN;
 use rustbot::util::configuration::*;
-use rustbot::constants::{ENV_BOT_TOKEN};
 
 mod commands;
 use commands::help::*;
@@ -60,7 +60,10 @@ async fn main() {
     let token = get_bot_token();
 
     if token.is_empty() {
-        error!("ERROR: no token provided! Please set the {} environment variable", ENV_BOT_TOKEN);
+        error!(
+            "ERROR: no token provided! Please set the {} environment variable",
+            ENV_BOT_TOKEN
+        );
         process::exit(0x0100);
     }
 

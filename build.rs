@@ -7,14 +7,11 @@ fn main() {
     println!("Base dir {}", base_dir);
     let profile = env::var("PROFILE").unwrap();
     println!("Profile {}", profile);
-    
-    let release_dir = Path::new(&base_dir)
-    .join("target")
-    .join(profile); 
+
+    let release_dir = Path::new(&base_dir).join("target").join(profile);
     println!("Release dir {}", release_dir.to_str().unwrap());
 
-    let template_dir = release_dir
-        .join("assets");
+    let template_dir = release_dir.join("assets");
     println!("Create output dir {}", template_dir.to_str().unwrap());
     // create output directory for build
     Command::new("mkdir")
@@ -30,11 +27,14 @@ fn main() {
 
     // Copy README for package
     Command::new("cp")
-        .args(&["package-readme.txt", release_dir.join("README.txt").to_str().unwrap()])
+        .args(&[
+            "package-readme.txt",
+            release_dir.join("README.txt").to_str().unwrap(),
+        ])
         .status()
         .unwrap();
 
-    // Copy licenses 
+    // Copy licenses
     Command::new("cp")
         .args(&["LICENSE-MIT", release_dir.to_str().unwrap()])
         .status()

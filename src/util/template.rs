@@ -2,7 +2,7 @@ use cached::proc_macro::cached;
 use std::fs;
 use std::path::Path;
 
-use tracing::{info};
+use tracing::info;
 
 /// TODO:
 /// - Template caching [DONE / WIP]

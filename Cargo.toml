@@ -10,8 +10,6 @@ build = "build.rs"
 [lib]
 name = "rustbot"
 
-# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
-
 [dependencies]
 tracing = "0.1.23"
 tracing-subscriber = "0.3.4"

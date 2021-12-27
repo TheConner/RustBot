@@ -8,7 +8,7 @@ use serenity::prelude::Context;
 
 use rustbot::constants::CHECK_MARK_EMOJI;
 
-use tracing::{info};
+use tracing::info;
 
 #[command]
 pub async fn ping(ctx: &Context, msg: &Message) -> CommandResult {
