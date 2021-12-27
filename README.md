@@ -20,7 +20,7 @@ Want to run your own RustBot? Great! I only have instructions to get you started
     ```
     DISCORD_TOKEN="YOUR_TOKEN_HERE"
     ```
-3. Build the container with the `./BuildContainer` script
+3. Build the container with the `podman build -t rustbot:latest .` script
 4. Build and run this project with `cargo run`
 
 ### Environment Variables
