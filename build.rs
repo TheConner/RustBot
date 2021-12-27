@@ -28,6 +28,12 @@ fn main() {
         .status()
         .unwrap();
 
+    // Copy README for package
+    Command::new("cp")
+        .args(&["package-readme.txt", release_dir.join("README.txt").to_str().unwrap()])
+        .status()
+        .unwrap();
+
     // Copy licenses 
     Command::new("cp")
         .args(&["LICENSE-MIT", release_dir.to_str().unwrap()])

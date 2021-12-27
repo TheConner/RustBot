@@ -1,6 +1,8 @@
 [package]
 name = "rustbot"
+license = "MIT/Apache-2.0"
 authors = [ "Conner Bradley <bradley@advtech.ca>" ]
+description = "A discord bot that runs whatever rust code is thrown at it"
 version = "0.1.0"
 edition = "2021"
 build = "build.rs"
@@ -18,3 +20,10 @@ regex = "1.5.4"
 base64 = "0.13.0"
 process_control = "3.1"
 cached = "0.26.2"
+
+[package.metadata.generate-rpm]
+assets = [
+    { source = "target/release/*rustbot", dest = "/opt/rustbot", mode = "0755" },
+    { source = "LICENSE*", dest = "/opt/rustbot", doc = true, mode = "0644" },
+    { source = "package-readme.txt", dest = "/opt/rustbot/README.txt", doc = true, mode = "0644" }
+]
