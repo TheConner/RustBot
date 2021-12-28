@@ -49,7 +49,7 @@ pub fn extract_code(text: &String) -> Option<CodeExtraction> {
 pub fn build_container_command(cmd: &str) -> String {
     let container_settings = get_container_settings();
     return format!(
-        "podman run {} rustbot:latest {}",
+        "podman run --rm {} rustbot:latest {}",
         container_settings.generate_runtime_flags(),
         cmd
     );
@@ -88,4 +88,8 @@ pub async fn run_command_with_timeout(cmd: &str, timeout: u64) -> Result<Output,
         .ok_or_else(|| io::Error::new(io::ErrorKind::TimedOut, "Process timed out"))?;
 
     return Ok(output);
+}
+
+pub async fn pull_latest_container_image() {
+
 }
