@@ -15,4 +15,4 @@ RUN adduser --disabled-password \
     --home /home/rustbot/ rustbot
 USER rustbot
 WORKDIR /home/rustbot
-COPY assets/container/trampoline /bin/trampoline
+COPY assets/container/trampoline /usr/bin/trampoline

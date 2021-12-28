@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
  
 # Trampoline utility for decoding b64 commands and running them
 
