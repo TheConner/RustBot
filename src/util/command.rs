@@ -1,5 +1,5 @@
 use crate::model::container::RuntimeSettings;
-use crate::util::configuration::{get_container_settings,is_container};
+use crate::util::configuration::{get_container_settings, is_container};
 use process_control::{ChildExt, Output, Timeout};
 use regex::Regex;
 use std::io;

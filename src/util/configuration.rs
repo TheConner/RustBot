@@ -38,7 +38,7 @@ fn get_bool_config_with_default(key: &str, default: bool) -> bool {
     match conf {
         Ok(val) => {
             return val.parse::<bool>().unwrap_or(default);
-        },
+        }
         Err(_e) => {
             return default;
         }
@@ -103,5 +103,8 @@ pub fn get_container_settings() -> ContainerSettings {
 /// Returns true if RustBot is running in a container
 #[cached]
 pub fn is_container() -> bool {
-    return get_bool_config_with_default(ENV_IS_RUNNING_IN_CONTAINER, DEFAULT_IS_RUNNING_IN_CONTAINER);
+    return get_bool_config_with_default(
+        ENV_IS_RUNNING_IN_CONTAINER,
+        DEFAULT_IS_RUNNING_IN_CONTAINER,
+    );
 }
