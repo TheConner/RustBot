@@ -31,6 +31,20 @@ fn get_u64_config_with_default(key: &str, default: u64) -> u64 {
     }
 }
 
+/// Gets a environment configuration bool with a given key
+/// If no value is found in environment variables, return default value
+fn get_bool_config_with_default(key: &str, default: bool) -> bool {
+    let conf = env::var(key);
+    match conf {
+        Ok(val) => {
+            return val.parse::<bool>().unwrap_or(default);
+        },
+        Err(_e) => {
+            return default;
+        }
+    }
+}
+
 /// maybe abstract all this as a struct, provide trait/impl methods to access various fields?
 /// this way I don't have to make a method for each field
 /// ... or maybe that's just overengineered here
@@ -84,4 +98,10 @@ pub fn get_container_settings() -> ContainerSettings {
         swap: get_str_config_with_default(ENV_CONTAINER_SWAP, DEFAULT_CONTAINER_SWAP),
         image: get_container_image(),
     };
+}
+
+/// Returns true if RustBot is running in a container
+#[cached]
+pub fn is_container() -> bool {
+    return get_bool_config_with_default(ENV_IS_RUNNING_IN_CONTAINER, DEFAULT_IS_RUNNING_IN_CONTAINER);
 }

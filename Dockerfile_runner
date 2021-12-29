@@ -1,5 +1,6 @@
 #
-# RustBot Docker Image
+# This image is responsible for running commands passed by the bot
+# it is invoked by the bot for one-time usage
 #
 FROM rust:alpine
 

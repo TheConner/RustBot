@@ -38,3 +38,9 @@ pub const DEFAULT_CONTAINER_MEMORY: &str = "100m";
 
 pub const ENV_CONTAINER_SWAP: &str = "CONTAINER_SWAP";
 pub const DEFAULT_CONTAINER_SWAP: &str = "5m";
+
+// Tells RustBot if it's running in a container
+// this will influence flags it chooses for child containers
+// available values: false,true
+pub const ENV_IS_RUNNING_IN_CONTAINER: &str = "IS_RUNNING_IN_CONTAINER";
+pub const DEFAULT_IS_RUNNING_IN_CONTAINER: bool = false;

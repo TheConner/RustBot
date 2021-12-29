@@ -20,8 +20,13 @@ Want to run your own RustBot? Great! I only have instructions to get you started
     ```
     DISCORD_TOKEN="YOUR_TOKEN_HERE"
     ```
-3. Build the container with the `podman build -t rustbot-runner:latest .` script
-4. Build and run this project with `cargo run`
+3. Build the container by running `podman build -f Dockerfile_runner -t rustbot-runner:latest .`
+4. OPTIONAL: if you are working on the runtime for rustbot itself:
+    a. Make release build of project `cargo build --release`
+    b. Strip debug symbols from release `strip -s target/release/*rustbot`
+    c. Generate RPM `cargo generate-rpm` 
+    d. Build container`podman build -f Dockerfile_bot -t rustbot:latest .`
+5. Build and run this project with `cargo run`
 
 ### Environment Variables
 | Name | Description | Required? | Default Value |
@@ -32,6 +37,7 @@ Want to run your own RustBot? Great! I only have instructions to get you started
 | `CONTAINER_CPU` | Max amount of CPU to delegate to the container | Optional | `0.5` | 
 | `CONTAINER_MEMORY` | Max amount of memory available to the container | Optional | `100m` |
 | `CONTAINER_SWAP` | Max amount of swap available to the container | Optional | `5m` |
+| `CONTAINER_IMAGE` | Container image to use | Optional | Uses a local `rustbot-runner:latest` for dev builds, for release it uses the [ghcr.io container image](ghcr.io/theconner/rustbot-runner:latest) |
 
 ## Bot Commands
 More commands should be coming soon, here is what we support at the moment:

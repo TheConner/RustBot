@@ -1,5 +1,5 @@
 use crate::model::container::RuntimeSettings;
-use crate::util::configuration::get_container_settings;
+use crate::util::configuration::{get_container_settings,is_container};
 use process_control::{ChildExt, Output, Timeout};
 use regex::Regex;
 use std::io;
@@ -50,7 +50,7 @@ pub fn build_container_command(cmd: &str) -> String {
     let container_settings = get_container_settings();
     return format!(
         "podman run --rm {} {} {}",
-        container_settings.generate_runtime_flags(),
+        container_settings.generate_runtime_flags(is_container()),
         container_settings.image,
         cmd
     );
