@@ -8,27 +8,27 @@
 
 RustBot is a discord bot that executes whatever rust code you throw at it. In a nutshell, it is remote code execution as a service 😛. Some practical applications of a bot that executes whatever code you throw at it is for Code Golf on discord servers (this bot only does rust), or for educational purposes where you could show code examples in a conversation. 
 
+For more information on how RustBot works, see our [internals](doc/internals.md) page.
+
 Future work for this bot includes:
 - **Multitenancy/Admin commands**: Allow admins to configure various settings, this would involve some form of database integration and adding additional contexts to bot messages.
-- **Running the bot as a container**: This would be tricky, since we would effectively be DinD (Docker in Docker) which has security implications if you're using the root-based docker daemon. Currently, we only support userspace containerization through podman, and the bot runs outside of a container while using podman to manage containers.
+
+
 
 ## Configuration
 Want to run your own RustBot? Great! I only have instructions to get you started developing locally on your own machine. In the future I will provide instructions for server deployments.
 
 1. You need [Podman](https://podman.io/) installed.
-2. Clone this repo, and add the `.env` file with your token
+2. Clone this repo, and add the `.env` file with your token. See [our instructions](doc/discord.md) on how to make a token and add a bot to your server for local development
     ```
     DISCORD_TOKEN="YOUR_TOKEN_HERE"
     ```
 3. Build the container by running `podman build -f Dockerfile_runner -t rustbot-runner:latest .`
-4. OPTIONAL: if you are working on the runtime for rustbot itself:
-    a. Make release build of project `cargo build --release`
-    b. Strip debug symbols from release `strip -s target/release/*rustbot`
-    c. Generate RPM `cargo generate-rpm` 
-    d. Build container`podman build -f Dockerfile_bot -t rustbot:latest .`
+4. OPTIONAL: if you are working on the container for rustbot itself, see the section on how to [build the container](doc/container.md)
 5. Build and run this project with `cargo run`
 
 ### Environment Variables
+These can either by specified by a `.env` file, or by exposing them the regular way.
 | Name | Description | Required? | Default Value |
 |------|-------------|-----------|---------------|
 | `DISCORD_TOKEN` | Discord bot token | Required | |
@@ -38,6 +38,7 @@ Want to run your own RustBot? Great! I only have instructions to get you started
 | `CONTAINER_MEMORY` | Max amount of memory available to the container | Optional | `100m` |
 | `CONTAINER_SWAP` | Max amount of swap available to the container | Optional | `5m` |
 | `CONTAINER_IMAGE` | Container image to use | Optional | Uses a local `rustbot-runner:latest` for dev builds, for release it uses the [ghcr.io container image](ghcr.io/theconner/rustbot-runner:latest) |
+| `IS_RUNNING_IN_CONTAINER` | Tells RustBot if it's running as a container | Optional | False by default, True by default for our [container builds](Dockerfile_bot) |
 
 ## Bot Commands
 More commands should be coming soon, here is what we support at the moment:
@@ -72,23 +73,7 @@ More commands should be coming soon, here is what we support at the moment:
 
 - `!ping`: Checks if the bot is working. The bot will react to your message and respond with PONG.
 
-## Internals
 
-All code compilation and execution is done in a container, which runs in userspace via [Podman](https://podman.io/) instead of Docker. It's worth noting that containers are not shared, the container only lives for the lifespan of the `!run` command. 
-
-When your `!run` command followed by rust code is received by the bot, the bot will extract your code from the message and then base64 encode it. We *could* be very pedantic about escaping your code when it gets transferred to the container to prevent breakouts; however, base64ing it does that for us for free. The encoded string is then ran by a [trampoline](assets/container/trampoline) in the container which handles decoding and running your program.
-
-The output of this would be the output of the rust program, which is ran by the helpful [runner](https://docs.rs/crate/runner/latest) which is great for running standalone rust files without scaffolding out a full project.
-
-To prevent DOS attacks on the platform, we have some policies to prevent code like this from eating up our resources:
-```rs
-use std::{thread, time};
-fn main() {
-    // do nothing for a minute
-    thread::sleep(time::Duration::from_millis(10000));
-    println!("Hello rustbot!");
-}
-```
 
 ## License
 
