@@ -12,6 +12,7 @@ use tracing::{error, info, instrument};
 
 use rustbot::constants::ENV_BOT_TOKEN;
 use rustbot::util::configuration::*;
+use rustbot::util::command::{pull_latest_container_image};
 
 mod commands;
 use commands::help::*;
@@ -66,6 +67,20 @@ async fn main() {
         );
         process::exit(0x0100);
     }
+
+    // Pull the container image in advance, fail if it fails
+    if !is_debug() {
+        let container_pull_result = pull_latest_container_image().await;
+        match container_pull_result {
+            Ok(_res) => info!("Container pull OK"),
+            Err(why) => {
+                error!("Could not pull container image, got error code {}", why);
+                process::exit(0x0100);
+            }
+        };
+    }
+
+    // Everything OK so far
 
     let http = Http::new_with_token(&token);
 

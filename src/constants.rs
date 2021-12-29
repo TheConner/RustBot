@@ -24,6 +24,10 @@ pub const DEFAULT_PREFIX: &str = "!";
 // --------------------------- //
 // CONTAINER RESOURCE SETTINGS //
 // --------------------------- //
+pub const ENV_CONTAINER_IMAGE: &str = "CONTAINER_IMAGE";
+pub const DEFAULT_CONTAINER_IMAGE: &str = "ghcr.io/theconner/rustbot-runner:latest"; // Used only on release build
+pub const DEFAULT_LOCAL_CONTAINER_IMAGE: &str = "rustbot-runner:latest";
+
 pub const ENV_CONTAINER_CPU: &str = "CONTAINER_CPU";
 pub const DEFAULT_CONTAINER_CPU: &str = "0.5"; // you get 1/2 of a cpu, i'm being generous
 
