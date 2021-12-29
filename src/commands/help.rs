@@ -61,7 +61,7 @@ pub async fn help(ctx: &Context, msg: &Message) -> CommandResult {
                                 .send_message(&ctx.http, |m| {
                                     m.embed(|e| {
                                         e.title(format!("{}{} help", bot_prefix, cmd));
-                                        e.description(format!("{}", help_text));
+                                        e.description(help_text);
 
                                         e
                                     });

@@ -20,9 +20,9 @@ impl RuntimeSettings for ContainerSettings {
         // NOTE: podman-in-podman requires cgroups to set resources, which isn't available within nested containers
         // so, admins will have to limit the resources on the outer container themselves
         if is_container {
-            return String::from("");
+            String::from("")
         } else {
-            return format!("--cpus={} --memory={}", self.cpu, self.memory);
+            format!("--cpus={} --memory={}", self.cpu, self.memory)
         }
     }
 }

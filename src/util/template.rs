@@ -11,7 +11,7 @@ use tracing::info;
 const BASE_PATH: &str = "assets/templates";
 
 fn get_template_path(template_name: &str) -> String {
-    return format!("{}/{}.md", BASE_PATH, template_name);
+    format!("{}/{}.md", BASE_PATH, template_name)
 }
 
 /// Reads a template file with name `template_name`
@@ -20,8 +20,7 @@ fn get_template_path(template_name: &str) -> String {
 fn read_template(template_name: String) -> String {
     info!("Reading template {}", template_name);
     let path = get_template_path(template_name.as_str());
-    let data = fs::read_to_string(path).expect("Unable to read file");
-    return data;
+    fs::read_to_string(path).expect("Unable to read file")
 }
 
 /// Reads a template file with name `template_name`
@@ -31,8 +30,8 @@ pub fn template_reader(template_name: &str) -> Option<String> {
     // we can't cache functions with &str values, but we can cache methods with string input
     if Path::new(&get_template_path(template_name)).exists() {
         // Path exists, read template and return
-        return Some(read_template(template_name.to_string()));
+        Some(read_template(template_name.to_string()))
     } else {
-        return None;
+        None
     }
 }

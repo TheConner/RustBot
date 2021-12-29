@@ -7,7 +7,7 @@ use serenity::framework::standard::CommandResult;
 use serenity::model::prelude::Message;
 use serenity::prelude::Context;
 use std::io::ErrorKind::TimedOut;
-use tracing::{debug, error, info};
+use tracing::{debug, info};
 
 /// Given some stdout or stderr data, format it so that it can be rendered by discord
 fn response_formatter(response: String) -> String {
@@ -33,8 +33,8 @@ pub async fn run(ctx: &Context, msg: &Message) -> CommandResult {
 
             // With the code matched, we have to b64 encode it to be sent to the container
             // the `payload` will then be encoded and decoded inside the container in a similar fashion to the original ShellBot
-            let encoded_program = base64::encode(c.code.unwrap_or(String::from("")));
-            let encoded_args = base64::encode(c.args.unwrap_or(String::from("")));
+            let encoded_program = base64::encode(c.code.unwrap_or_else(|| String::from("")));
+            let encoded_args = base64::encode(c.args.unwrap_or_else(|| String::from("")));
             let payload = build_container_command(
                 format!("trampoline {} {}", encoded_program, encoded_args).as_str(),
             );
@@ -49,7 +49,7 @@ pub async fn run(ctx: &Context, msg: &Message) -> CommandResult {
                     let mut stdout = String::new();
                     let mut stderr = String::new();
 
-                    if output.stdout.len() > 0 {
+                    if !output.stdout.is_empty() {
                         stdout = match String::from_utf8(output.stdout) {
                             Ok(v) => v,
                             Err(e) => panic!("Invalid UTF-8 sequence: {}", e),
@@ -58,7 +58,7 @@ pub async fn run(ctx: &Context, msg: &Message) -> CommandResult {
                         debug!("Got stdout");
                     }
 
-                    if output.stderr.len() > 0 {
+                    if !output.stderr.is_empty() {
                         stderr = match String::from_utf8(output.stderr) {
                             Ok(v) => v,
                             Err(e) => panic!("Invalid UTF-8 sequence: {}", e),
@@ -67,7 +67,7 @@ pub async fn run(ctx: &Context, msg: &Message) -> CommandResult {
                     }
 
                     // Check to see if the response was nothing
-                    if stdout.len() == 0 && stderr.len() == 0 {
+                    if stdout.is_empty() && !stderr.is_empty() {
                         // No stdout or stderr
                         msg.react(&ctx, CHECK_MARK_EMOJI).await?;
                         msg.reply(
@@ -76,7 +76,7 @@ pub async fn run(ctx: &Context, msg: &Message) -> CommandResult {
                                 .expect("Could not read template run_no_output"),
                         )
                         .await?;
-                    } else if stdout.len() == 0 && stderr.len() > 0 {
+                    } else if stdout.is_empty() && !stderr.is_empty() {
                         // Had stderr, no stdout
                         msg.react(&ctx, CROSS_MARK_EMOJI).await?;
                         msg.reply(&ctx, response_formatter(stderr)).await?;

@@ -16,7 +16,7 @@ pub struct CodeExtraction {
 /// Extracts source code from a command message.
 /// If no code is extractable, None is returned
 /// Otherwise, you will get Some string
-pub fn extract_code(text: &String) -> Option<CodeExtraction> {
+pub fn extract_code(text: &str) -> Option<CodeExtraction> {
     // <begin rant>
     // The regex I want to use is (?<=```)(rs|.*)((.|\n)*)(?=```)
     // but no lookahead or lookbehind support in rust's regex lib
@@ -31,29 +31,27 @@ pub fn extract_code(text: &String) -> Option<CodeExtraction> {
     let re = Regex::new(r"!run(.*)\n```(rs|.*)((.|\n)*)```").unwrap();
     let captures_opt = re.captures(text);
 
-    if captures_opt.is_none() {
-        return None;
-    }
+    captures_opt.as_ref()?;
 
     // Have matches, return some
     let captures = captures_opt.unwrap();
     let argument_capture = captures.get(1);
     let code_capture = captures.get(3);
-    return Some(CodeExtraction {
+    Some(CodeExtraction {
         code: code_capture.map(|m| String::from(m.as_str())),
         args: argument_capture.map(|m| String::from(m.as_str())),
-    });
+    })
 }
 
 /// Builds a command to invoke our container with a command (cmd)
 pub fn build_container_command(cmd: &str) -> String {
     let container_settings = get_container_settings();
-    return format!(
+    format!(
         "podman run --rm {} {} {}",
         container_settings.generate_runtime_flags(is_container()),
         container_settings.image,
         cmd
-    );
+    )
 }
 
 /// Provides a uniform way of running a command with a timeout
@@ -88,7 +86,7 @@ pub async fn run_command_with_timeout(cmd: &str, timeout: u64) -> Result<Output,
         .wait()?
         .ok_or_else(|| io::Error::new(io::ErrorKind::TimedOut, "Process timed out"))?;
 
-    return Ok(output);
+    Ok(output)
 }
 
 pub async fn pull_latest_container_image() -> Result<(), Error> {
@@ -102,14 +100,14 @@ pub async fn pull_latest_container_image() -> Result<(), Error> {
     let status = output.code().expect("No output code");
 
     if status == 0 {
-        return Ok(());
+        Ok(())
     } else {
-        return Result::Err(io::Error::new(
+        Result::Err(io::Error::new(
             io::ErrorKind::Other,
             format!(
                 "Could not pull docker image, got error code {} from podman",
                 status
             ),
-        ));
+        ))
     }
 }
