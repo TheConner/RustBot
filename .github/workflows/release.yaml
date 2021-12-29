@@ -5,22 +5,35 @@ on:
 
 name: Release Packaging
 
+env:
+  RUNNER_IMAGE_NAME: rustbot-runner
+  BOT_IMAGE_NAME: rustbot
+
 jobs:
-  release:
+  package:
     name: Release Packaging
     env:
       PROJECT_NAME_UNDERSCORE: rustbot
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
+      
       - uses: actions-rs/toolchain@v1
         with:
           profile: minimal
           toolchain: stable
           override: true
+      
+      - name: Install RPM packager
+        run: cargo install cargo-generate-rpm
+      
       - name: Release Build
-        run: cargo build --release
-      - name: 'Upload Artifact'
+        run: |
+          cargo build --release
+          strip -s target/release/*rustbot
+          cargo generate-rpm -o target/generate-rpm/rustbot-x86_64.rpm
+      
+      - name: 'Upload Release Artifact'
         uses: actions/upload-artifact@v2
         with:
           name: ${{ env.PROJECT_NAME_UNDERSCORE }}
@@ -28,3 +41,68 @@ jobs:
             target/release/*rustbot*
             target/release/assets/*
             LICENSE*
+      
+      - name: 'Upload RPM Artifact'
+        uses: actions/upload-artifact@v2
+        with:
+          name: ${{ env.PROJECT_NAME_UNDERSCORE }}_rpm
+          path: |
+            target/generate-rpm/rustbot-x86_64.rpm
+  
+  package-docker:
+    runs-on: ubuntu-latest
+    needs: package
+    permissions:
+      packages: write
+      contents: read
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - uses: actions/download-artifact@v2
+        with:
+          name: ${{ env.PROJECT_NAME_UNDERSCORE }}_rpm
+
+      - name: Build runner image
+        run: docker build . --file Dockerfile_runner --tag $RUNNER_IMAGE_NAME --label "runnumber=${GITHUB_RUN_ID}"
+
+      - name: Build bot image
+        run: docker build . --file Dockerfile_bot --tag $BOT_IMAGE_NAME --label "runnumber=${GITHUB_RUN_ID}"
+
+      - name: Log in to registry
+        # This is where you will update the PAT to GITHUB_TOKEN
+        run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
+
+      - name: Push runner image
+        run: |
+          IMAGE_ID=ghcr.io/${{ github.repository_owner }}/$RUNNER_IMAGE_NAME
+
+          # Change all uppercase to lowercase
+          IMAGE_ID=$(echo $IMAGE_ID | tr '[A-Z]' '[a-z]')
+          # Strip git ref prefix from version
+          VERSION=$(echo "${{ github.ref }}" | sed -e 's,.*/\(.*\),\1,')
+          # Strip "v" prefix from tag name
+          [[ "${{ github.ref }}" == "refs/tags/"* ]] && VERSION=$(echo $VERSION | sed -e 's/^v//')
+          # Use Docker `latest` tag convention
+          [ "$VERSION" == "main" ] && VERSION=latest
+          echo IMAGE_ID=$IMAGE_ID
+          echo VERSION=$VERSION
+          docker tag $RUNNER_IMAGE_NAME $IMAGE_ID:$VERSION
+          docker push $IMAGE_ID:$VERSION
+
+      - name: Push bot image
+        run: |
+          IMAGE_ID=ghcr.io/${{ github.repository_owner }}/$BOT_IMAGE_NAME
+
+          # Change all uppercase to lowercase
+          IMAGE_ID=$(echo $IMAGE_ID | tr '[A-Z]' '[a-z]')
+          # Strip git ref prefix from version
+          VERSION=$(echo "${{ github.ref }}" | sed -e 's,.*/\(.*\),\1,')
+          # Strip "v" prefix from tag name
+          [[ "${{ github.ref }}" == "refs/tags/"* ]] && VERSION=$(echo $VERSION | sed -e 's/^v//')
+          # Use Docker `latest` tag convention
+          [ "$VERSION" == "main" ] && VERSION=latest
+          echo IMAGE_ID=$IMAGE_ID
+          echo VERSION=$VERSION
+          docker tag $BOT_IMAGE_NAME $IMAGE_ID:$VERSION
+          docker push $IMAGE_ID:$VERSION

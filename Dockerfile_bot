@@ -9,7 +9,7 @@ FROM quay.io/containers/podman:latest
 WORKDIR /home/podman
 
 # This assumes the release build is done and the RPM package is built
-COPY target/generate-rpm/rustbot-0.1.0-1.x86_64.rpm /home/podman/rustbot.rpm
+COPY target/generate-rpm/rustbot-x86_64.rpm /home/podman/rustbot.rpm
 
 # Install RPM and remove install file 
 RUN rpm -ivh rustbot.rpm; \
