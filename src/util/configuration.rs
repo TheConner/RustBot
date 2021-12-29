@@ -82,7 +82,6 @@ pub fn get_container_settings() -> ContainerSettings {
         cpu: get_str_config_with_default(ENV_CONTAINER_CPU, DEFAULT_CONTAINER_CPU),
         memory: get_str_config_with_default(ENV_CONTAINER_MEMORY, DEFAULT_CONTAINER_MEMORY),
         swap: get_str_config_with_default(ENV_CONTAINER_SWAP, DEFAULT_CONTAINER_SWAP),
-        image: get_container_image()
+        image: get_container_image(),
     };
 }
-

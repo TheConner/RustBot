@@ -1,5 +1,5 @@
 use crate::model::container::RuntimeSettings;
-use crate::util::configuration::{get_container_settings};
+use crate::util::configuration::get_container_settings;
 use process_control::{ChildExt, Output, Timeout};
 use regex::Regex;
 use std::io;
@@ -94,17 +94,22 @@ pub async fn run_command_with_timeout(cmd: &str, timeout: u64) -> Result<Output,
 pub async fn pull_latest_container_image() -> Result<(), Error> {
     let container_settings = get_container_settings();
     let output = Command::new("podman")
-            .arg("pull")
-            .arg(container_settings.image)
-            .status()
-            .expect("failed to execute process");
+        .arg("pull")
+        .arg(container_settings.image)
+        .status()
+        .expect("failed to execute process");
 
     let status = output.code().expect("No output code");
 
     if status == 0 {
         return Ok(());
     } else {
-        return Result::Err(io::Error::new(io::ErrorKind::Other, format!("Could not pull docker image, got error code {} from podman", status)));
+        return Result::Err(io::Error::new(
+            io::ErrorKind::Other,
+            format!(
+                "Could not pull docker image, got error code {} from podman",
+                status
+            ),
+        ));
     }
-    
 }

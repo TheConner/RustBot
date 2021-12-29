@@ -4,7 +4,7 @@ pub struct ContainerSettings {
     pub cpu: String,
     pub memory: String,
     pub swap: String,
-    pub image: String
+    pub image: String,
 }
 
 pub trait RuntimeSettings {

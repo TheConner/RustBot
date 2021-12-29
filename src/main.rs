@@ -11,8 +11,8 @@ use std::{collections::HashSet, process, sync::Arc};
 use tracing::{error, info, instrument};
 
 use rustbot::constants::ENV_BOT_TOKEN;
+use rustbot::util::command::pull_latest_container_image;
 use rustbot::util::configuration::*;
-use rustbot::util::command::{pull_latest_container_image};
 
 mod commands;
 use commands::help::*;
