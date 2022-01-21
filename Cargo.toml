@@ -19,7 +19,7 @@ serenity = "0.10.9"
 regex = "1.5.4"
 base64 = "0.13.0"
 process_control = "3.2"
-cached = "0.29.0"
+cached = "0.30.0"
 
 [package.metadata.generate-rpm]
 assets = [
