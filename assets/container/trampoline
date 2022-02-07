@@ -11,9 +11,6 @@
 cmd_base64=$1
 args_base64=$2
 
-cmd_decoded=$(echo ${cmd_base64} | base64 -d)
-args_decoded=$(echo ${args_base64} | base64 -d)
-
 # Construct program and run it depending on what [action] is provided
-echo $cmd_decoded > program.rs
-runner program.rs $args_decoded
+echo ${cmd_base64} | base64 -d > program.rs
+runner program.rs $(echo ${args_base64} | base64 -d)
