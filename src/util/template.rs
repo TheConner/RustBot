@@ -36,7 +36,7 @@ fn is_interpolation_key_allowed(key: &str) -> bool {
 /// For example, if template is
 ///     Hello {{NAME}} would you like a {{ITEM}}
 /// This function will return ['{{NAME}}','{{ITEM}}']
-fn get_interpolations(template: &String) -> HashMap<String, String> {
+fn get_interpolations(template: &str) -> HashMap<String, String> {
     let re = Regex::new(r"\{\{(.*)\}\}").unwrap();
     let mut interpolations: HashMap<String, String> = HashMap::new();
 
@@ -46,20 +46,18 @@ fn get_interpolations(template: &String) -> HashMap<String, String> {
         return interpolations;
     }
 
-    for cap in re.captures_iter(template.as_str()) {
+    for cap in re.captures_iter(template) {
         // there must be a less nasty way to do this...
         let template_sub: &str = cap.get(1).map(|m| m.as_str()).unwrap();
-        if !interpolations.contains_key(template_sub) {
-            if is_interpolation_key_allowed(template_sub) {
-                interpolations.insert(
-                    // What a stupid escape system
-                    // two {{ = one escaped {
-                    // so if I want to format `TEST` as `{{TEST}}` it looks
-                    // like this `{{{{{}}}}}`
-                    String::from(format!("{{{{{}}}}}", template_sub)),
-                    get_str_config_with_default(&template_sub),
-                );
-            }
+        if !interpolations.contains_key(template_sub) && is_interpolation_key_allowed(template_sub) {
+            interpolations.insert(
+                // What a stupid escape system
+                // two {{ = one escaped {
+                // so if I want to format `TEST` as `{{TEST}}` it looks
+                // like this `{{{{{}}}}}`
+                format!("{{{{{}}}}}", template_sub),
+                get_str_config_with_default(template_sub),
+            );
         }
     }
 
@@ -69,7 +67,7 @@ fn get_interpolations(template: &String) -> HashMap<String, String> {
 fn do_interpolations(template: String, interpolations: HashMap<String, String>) -> String {
     interpolations
         .iter()
-        .fold(template, |s, (from, to)| s.replace(from, to).into())
+        .fold(template, |s, (from, to)| s.replace(from, to))
 }
 
 /// Reads a template file with name `template_name`

@@ -74,13 +74,7 @@ pub fn get_container_runtime() -> u64 {
 /// Returns the container image to use depending on if we are doing local development
 /// or if we are running a relase build
 fn get_container_image() -> String {
-    if is_debug() {
-        // Debug true, use local container image
-        get_str_config_with_default(ENV_CONTAINER_IMAGE)
-    } else {
-        // Debug false, use remote container image
-        get_str_config_with_default(ENV_CONTAINER_IMAGE)
-    }
+    get_str_config_with_default(ENV_CONTAINER_IMAGE)
 }
 
 #[cached]
