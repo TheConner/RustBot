@@ -11,9 +11,10 @@ use tracing::{debug, info};
 
 /// Given some stdout or stderr data, format it so that it can be rendered by discord
 fn response_formatter(response: String) -> String {
+    debug!("Format response \"{}\"", response);
     if response.len() < 1990 {
         // Response falls within size constraints
-        return format!("```{}```", response);
+        return format!("```\n{}\n```", response);
     } else {
         // we trim to 1981 chars because [TRIMMED] is 9 chars
         let short_repsonse = &response[0..1981]; // TODO: maybe do this in place with a mutable string
@@ -55,7 +56,9 @@ pub async fn run(ctx: &Context, msg: &Message) -> CommandResult {
                             Err(e) => panic!("Invalid UTF-8 sequence: {}", e),
                         };
 
-                        debug!("Got stdout");
+                        debug!("Got stdout\n\"{}\"", stdout);
+                    } else {
+                        debug!("No stdout");
                     }
 
                     if !output.stderr.is_empty() {
@@ -64,11 +67,22 @@ pub async fn run(ctx: &Context, msg: &Message) -> CommandResult {
                             Err(e) => panic!("Invalid UTF-8 sequence: {}", e),
                         };
                         debug!("Got stderr \"{}\"", stderr);
+                    } else {
+                        debug!("No stderr");
                     }
 
                     // Check to see if the response was nothing
-                    if stdout.is_empty() && !stderr.is_empty() {
-                        // No stdout or stderr
+                    if !stdout.is_empty() && stderr.is_empty() {
+                        debug!("Response: has stdout, no stderr");
+                        msg.react(&ctx, CHECK_MARK_EMOJI).await?;
+                        msg.reply(&ctx, response_formatter(stdout)).await?;
+                    } else if stdout.is_empty() && !stderr.is_empty() {
+                        debug!("Response: no stdout, has stderr");
+                        // Had stderr, no stdout
+                        msg.react(&ctx, CROSS_MARK_EMOJI).await?;
+                        msg.reply(&ctx, response_formatter(stderr)).await?;
+                    } else {
+                        debug!("Response: no stdout, no stderr");
                         msg.react(&ctx, CHECK_MARK_EMOJI).await?;
                         msg.reply(
                             &ctx,
@@ -76,13 +90,6 @@ pub async fn run(ctx: &Context, msg: &Message) -> CommandResult {
                                 .expect("Could not read template run_no_output"),
                         )
                         .await?;
-                    } else if stdout.is_empty() && !stderr.is_empty() {
-                        // Had stderr, no stdout
-                        msg.react(&ctx, CROSS_MARK_EMOJI).await?;
-                        msg.reply(&ctx, response_formatter(stderr)).await?;
-                    } else {
-                        msg.react(&ctx, CHECK_MARK_EMOJI).await?;
-                        msg.reply(&ctx, response_formatter(stdout)).await?;
                     }
                 }
                 Err(error) => {

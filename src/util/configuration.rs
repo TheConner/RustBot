@@ -5,14 +5,17 @@ use cached::proc_macro::cached;
 /// The idea behind this is this design can easily be adapted to hook up to a database for multitenancy
 use std::env;
 
-use tracing::info;
-
 /// Gets a environment configuration string value with a given key
 /// If no value is found in environment variables, return default value
 pub fn get_str_config_with_default(key: &str) -> String {
     let conf = env::var(key);
-    info!("Got default setting key {} value {}",key, DEFAULT_SETTINGS.get(key).unwrap_or(&"N/A"));
-    conf.unwrap_or_else(|_| String::from(*DEFAULT_SETTINGS.get(key).unwrap_or(&"ERROR: NO DEFAULT PROVIDED")))
+    conf.unwrap_or_else(|_| {
+        String::from(
+            *DEFAULT_SETTINGS
+                .get(key)
+                .unwrap_or(&"ERROR: NO DEFAULT PROVIDED"),
+        )
+    })
 }
 
 /// Gets a environment configuration int value with a given key

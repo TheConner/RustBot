@@ -1,14 +1,12 @@
 use crate::model::container::RuntimeSettings;
 use crate::util::configuration::{get_container_settings, is_container};
-use process_control::{ChildExt, Output, Timeout};
+use process_control::{ChildExt, Control, Output};
 use regex::Regex;
 use std::io;
 use std::io::Error;
 use std::process::Command;
 use std::process::Stdio;
 use std::time::Duration;
-
-use std::collections::HashMap;
 
 pub struct CodeExtraction {
     pub code: Option<String>,
@@ -79,16 +77,16 @@ pub async fn run_command_with_timeout(cmd: &str, timeout: u64) -> Result<Output,
         .args(["-c", cmd])
         .stdout(Stdio::piped())
         .stderr(Stdio::piped())
-        .spawn()
-        .unwrap();
+        .spawn()?;
 
     let output = process
-        .with_output_timeout(Duration::from_millis(timeout))
-        .terminating()
+        .controlled_with_output()
+        .time_limit(Duration::from_millis(timeout))
+        .terminate_for_timeout()
         .wait()?
-        .ok_or_else(|| io::Error::new(io::ErrorKind::TimedOut, "Process timed out"))?;
+        .ok_or_else(|| io::Error::new(io::ErrorKind::TimedOut, "Process timed out"));
 
-    Ok(output)
+    output
 }
 
 pub async fn pull_latest_container_image() -> Result<(), Error> {
