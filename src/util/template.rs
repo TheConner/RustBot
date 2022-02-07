@@ -49,7 +49,7 @@ fn get_interpolations(template: &str) -> HashMap<String, String> {
     for cap in re.captures_iter(template) {
         // there must be a less nasty way to do this...
         let template_sub: &str = cap.get(1).map(|m| m.as_str()).unwrap();
-        if !interpolations.contains_key(template_sub) && is_interpolation_key_allowed(template_sub) 
+        if !interpolations.contains_key(template_sub) && is_interpolation_key_allowed(template_sub)
         {
             interpolations.insert(
                 // What a stupid escape system
