@@ -12,7 +12,7 @@ name = "rustbot"
 
 [dependencies]
 tracing = "0.1.23"
-tracing-subscriber = "0.3.7"
+tracing-subscriber = "0.3.8"
 tokio = { version = "1.16", features = ["macros", "signal", "rt-multi-thread"] }
 dotenv = { version = "0.15.0" }
 serenity = "0.10.10"
