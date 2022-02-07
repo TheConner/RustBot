@@ -1,4 +1,5 @@
 # RustBot
+![CheckAndLint](https://github.com/TheConner/RustBot/actions/workflows/check.yaml/badge.svg)&nbsp;&nbsp;&nbsp;![ReleaseBuild](https://github.com/TheConner/RustBot/actions/workflows/release.yaml/badge.svg)
 
 <p align="center">
   <img src="./assets/demo/rustbot_basic.png">
