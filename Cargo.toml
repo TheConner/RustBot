@@ -20,6 +20,7 @@ regex = "1.5.4"
 base64 = "0.13.0"
 process_control = "3.2"
 cached = "0.30.0"
+lazy_static = "1.4.0"
 
 [package.metadata.generate-rpm]
 assets = [

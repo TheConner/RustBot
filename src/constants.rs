@@ -1,3 +1,5 @@
+use std::collections::HashMap;
+
 /// The ✅ emoji code in discord - used to indicate everything's peachy
 pub const CHECK_MARK_EMOJI: char = '✅';
 
@@ -20,6 +22,9 @@ pub const DEFAULT_CONTAINER_RUNTIME: u64 = 5000;
 /// Environment variable for bot prefix
 pub const ENV_BOT_PREFIX: &str = "BOT_PREFIX";
 pub const DEFAULT_PREFIX: &str = "!";
+
+/// Base path to look for templates
+pub const TEMPLATE_BASE_PATH: &str = "assets/templates";
 
 // --------------------------- //
 // CONTAINER RESOURCE SETTINGS //
@@ -44,3 +49,17 @@ pub const DEFAULT_CONTAINER_SWAP: &str = "5m";
 // available values: false,true
 pub const ENV_IS_RUNNING_IN_CONTAINER: &str = "IS_RUNNING_IN_CONTAINER";
 pub const DEFAULT_IS_RUNNING_IN_CONTAINER: bool = false;
+
+// DEFAULT SETTINGS HASH MAP
+lazy_static! {
+    pub static ref DEFAULT_SETTINGS: HashMap<&'static str, &'static str> = {
+        let mut m = HashMap::new();
+        m.insert(ENV_BOT_TOKEN, "NO_TOKEN_PROVIDED");
+        m.insert(ENV_BOT_PREFIX, DEFAULT_PREFIX);
+        m.insert(ENV_CONTAINER_IMAGE, DEFAULT_CONTAINER_IMAGE);
+        m.insert(ENV_CONTAINER_CPU, DEFAULT_CONTAINER_CPU);
+        m.insert(ENV_CONTAINER_MEMORY, DEFAULT_CONTAINER_MEMORY);
+        m.insert(ENV_CONTAINER_SWAP, DEFAULT_CONTAINER_SWAP);
+        m
+    };
+}

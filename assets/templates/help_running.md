@@ -1,1 +1,1 @@
-Sorry, I could not find any code to run in your message. For help on how to run rust code, please see `!help run`
+Sorry, I could not find any code to run in your message. For help on how to run rust code, please see `{{BOT_PREFIX}}help run`

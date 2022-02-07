@@ -8,6 +8,8 @@ use std::process::Command;
 use std::process::Stdio;
 use std::time::Duration;
 
+use std::collections::HashMap;
+
 pub struct CodeExtraction {
     pub code: Option<String>,
     pub args: Option<String>,

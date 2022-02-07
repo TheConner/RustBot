@@ -1,6 +1,6 @@
-`run`: Runs some rust code. The code you give should be in a code block (see below) with `rs` identifying the language. For example to run a simple hello world program you would type
+`{{BOT_PREFIX}}run`: Runs some rust code. The code you give should be in a code block (see below) with `rs` identifying the language. For example to run a simple hello world program you would type
 
-!run
+{{BOT_PREFIX}}run
 \```rs
 fn main() {
     println!("Hello shellbot!");
@@ -9,7 +9,7 @@ fn main() {
 
 If you want to pass arguments to the program, those can be included after the run command. For example:
 
-!run hello world
+{{BOT_PREFIX}}run hello world
 \```rs
 use std::env;
 

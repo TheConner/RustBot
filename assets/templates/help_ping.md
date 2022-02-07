@@ -1,1 +1,1 @@
-The ping command will respond with PONG. Run `!ping` to get a PONG response. This is more of a debugging command to see if the bot is connected ok.
+The ping command will respond with PONG. Run `{{BOT_PREFIX}}ping` to get a PONG response. This is more of a debugging command to see if the bot is connected ok.

@@ -5,11 +5,14 @@ use cached::proc_macro::cached;
 /// The idea behind this is this design can easily be adapted to hook up to a database for multitenancy
 use std::env;
 
+use tracing::info;
+
 /// Gets a environment configuration string value with a given key
 /// If no value is found in environment variables, return default value
-fn get_str_config_with_default(key: &str, default: &str) -> String {
+pub fn get_str_config_with_default(key: &str) -> String {
     let conf = env::var(key);
-    conf.unwrap_or_else(|_| String::from(default))
+    info!("Got default setting key {} value {}",key, DEFAULT_SETTINGS.get(key).unwrap_or(&"N/A"));
+    conf.unwrap_or_else(|_| String::from(*DEFAULT_SETTINGS.get(key).unwrap_or(&"ERROR: NO DEFAULT PROVIDED")))
 }
 
 /// Gets a environment configuration int value with a given key
@@ -52,12 +55,12 @@ pub fn is_debug() -> bool {
 
 #[cached]
 pub fn get_bot_prefix() -> String {
-    get_str_config_with_default(ENV_BOT_PREFIX, DEFAULT_PREFIX)
+    get_str_config_with_default(ENV_BOT_PREFIX)
 }
 
 #[cached]
 pub fn get_bot_token() -> String {
-    get_str_config_with_default(ENV_BOT_TOKEN, "")
+    get_str_config_with_default(ENV_BOT_TOKEN)
 }
 
 #[cached]
@@ -70,19 +73,19 @@ pub fn get_container_runtime() -> u64 {
 fn get_container_image() -> String {
     if is_debug() {
         // Debug true, use local container image
-        get_str_config_with_default(ENV_CONTAINER_IMAGE, DEFAULT_LOCAL_CONTAINER_IMAGE)
+        get_str_config_with_default(ENV_CONTAINER_IMAGE)
     } else {
         // Debug false, use remote container image
-        get_str_config_with_default(ENV_CONTAINER_IMAGE, DEFAULT_CONTAINER_IMAGE)
+        get_str_config_with_default(ENV_CONTAINER_IMAGE)
     }
 }
 
 #[cached]
 pub fn get_container_settings() -> ContainerSettings {
     ContainerSettings {
-        cpu: get_str_config_with_default(ENV_CONTAINER_CPU, DEFAULT_CONTAINER_CPU),
-        memory: get_str_config_with_default(ENV_CONTAINER_MEMORY, DEFAULT_CONTAINER_MEMORY),
-        swap: get_str_config_with_default(ENV_CONTAINER_SWAP, DEFAULT_CONTAINER_SWAP),
+        cpu: get_str_config_with_default(ENV_CONTAINER_CPU),
+        memory: get_str_config_with_default(ENV_CONTAINER_MEMORY),
+        swap: get_str_config_with_default(ENV_CONTAINER_SWAP),
         image: get_container_image(),
     }
 }

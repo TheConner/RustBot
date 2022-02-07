@@ -910,6 +910,7 @@ dependencies = [
  "base64 0.13.0",
  "cached",
  "dotenv",
+ "lazy_static",
  "process_control",
  "regex",
  "serenity",

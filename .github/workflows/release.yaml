@@ -64,10 +64,10 @@ jobs:
           path: target/generate-rpm/
 
       - name: Build runner image
-        run: docker build . --file Dockerfile_runner --tag $RUNNER_IMAGE_NAME --label "runnumber=${GITHUB_RUN_ID}"
+        run: docker build . --file runner.Dockerfile --tag $RUNNER_IMAGE_NAME --label "runnumber=${GITHUB_RUN_ID}"
 
       - name: Build bot image
-        run: docker build . --file Dockerfile_bot --tag $BOT_IMAGE_NAME --label "runnumber=${GITHUB_RUN_ID}"
+        run: docker build . --file bot.Dockerfile --tag $BOT_IMAGE_NAME --label "runnumber=${GITHUB_RUN_ID}"
 
       - name: Log in to registry
         # This is where you will update the PAT to GITHUB_TOKEN

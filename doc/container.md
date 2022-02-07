@@ -23,6 +23,6 @@ Here is how to build the RustBot container. Note that the container only uses re
 1. Make release build of project `cargo build --release`
 2. Strip debug symbols from release `strip -s target/release/*rustbot`
 3. Generate RPM `cargo generate-rpm` 
-4. Build container`podman build -f Dockerfile_bot -t rustbot:latest .`
+4. Build container`podman build -f bot.Dockerfile -t rustbot:latest .`
 
 Then, to run locally, substitute `ghcr.io/theconner/rustbot:latest` with `localhost/rustbot:latest`
