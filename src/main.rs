@@ -95,17 +95,16 @@ async fn main() {
                 Ok(bot_id) => (owners, bot_id.id),
                 Err(why) => panic!("Could not access the bot id: {:?}", why),
             }
-        },
+        }
         Err(why) => panic!("Could not access application info: {:?}", why),
     };
 
     // Create the framework
     let framework = StandardFramework::new()
-        .configure(|c| c.prefix(get_bot_prefix().as_str())
-            .owners(owners))
+        .configure(|c| c.prefix(get_bot_prefix().as_str()).owners(owners))
         .group(&GENERAL_GROUP);
 
-    let intents = GatewayIntents::GUILD_MESSAGES 
+    let intents = GatewayIntents::GUILD_MESSAGES
         | GatewayIntents::GUILD_MESSAGE_REACTIONS
         | GatewayIntents::MESSAGE_CONTENT;
 
