@@ -33,7 +33,7 @@ jobs:
       - name: Build
         run: |
           cargo build --release --target x86_64-unknown-linux-musl
-          strip -s target/release/*rustbot
+          strip -s target/x86_64-unknown-linux-musl/release/*rustbot
           cargo generate-rpm -o target/generate-rpm/rustbot-x86_64.rpm
       
       - name: 'Upload Release Artifact'
@@ -41,8 +41,8 @@ jobs:
         with:
           name: ${{ env.PROJECT_NAME_UNDERSCORE }}
           path: |
-            target/release/*rustbot*
-            target/release/assets/*
+            target/x86_64-unknown-linux-musl/release/*rustbot*
+            target/x86_64-unknown-linux-musl/release/assets/*
             LICENSE*
       
       - name: 'Upload RPM Artifact'

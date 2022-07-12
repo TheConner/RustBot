@@ -24,8 +24,8 @@ lazy_static = "1.4.0"
 
 [package.metadata.generate-rpm]
 assets = [
-    { source = "target/release/*rustbot", dest = "/opt/rustbot", mode = "0755" },
-    { source = "target/release/assets/templates/*", dest = "/opt/rustbot/assets/templates", mode = "0644" },
+    { source = "target/x86_64-unknown-linux-musl/release/*rustbot", dest = "/opt/rustbot", mode = "0755" },
+    { source = "target/x86_64-unknown-linux-musl/release/assets/templates/*", dest = "/opt/rustbot/assets/templates", mode = "0644" },
     { source = "LICENSE*", dest = "/opt/rustbot", doc = true, mode = "0644" },
     { source = "package-readme.txt", dest = "/opt/rustbot/README.txt", doc = true, mode = "0644" }
 ]
