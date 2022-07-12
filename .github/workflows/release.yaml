@@ -26,6 +26,9 @@ jobs:
       
       - name: Install RPM packager
         run: cargo install cargo-generate-rpm
+        
+      - name: Install MUSL Toolchain
+        run: apt-get -y install musl-tools
       
       - name: Build
         run: |
