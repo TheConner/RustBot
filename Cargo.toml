@@ -19,7 +19,7 @@ serenity = "0.11.2"
 regex = "1.6.0"
 base64 = "0.13.0"
 process_control = "3.5"
-cached = "0.36.0"
+cached = "0.37.0"
 lazy_static = "1.4.0"
 
 [package.metadata.generate-rpm]
