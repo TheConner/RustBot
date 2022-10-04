@@ -18,7 +18,7 @@ jobs:
   do-update:
     needs: [check-update]    
     secrets: inherit
-    uses: TheConner/RustBot/.github/workflows/build-release-container.yml@main
+    uses: ./.github/workflows/build-release-container.yml
     with:
       image_name: rustbot-runner
       image_file: runner.Dockerfile
