@@ -16,9 +16,9 @@ jobs:
           base-image: rust:alpine
           image: ghcr.io/theconner/rustbot-runner:latest
   do-update:
-    needs: [check-update]    
+    needs: [check-update]
     secrets: inherit
-    uses: ./.github/workflows/build-release-container.yml
+    uses: ./.github/workflows/build-release-container.yaml
     with:
       image_name: rustbot-runner
       image_file: runner.Dockerfile
