@@ -4,22 +4,24 @@ on:
   workflow_dispatch:
 
 jobs:
-  check-update:
+  check:
     runs-on: ubuntu-latest
     steps:
+      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v2
-
       - name: Check Update
         id: baseupdatecheck
         uses: lucacome/docker-image-update-checker@v1.1.0
         with:
           base-image: rust:alpine
           image: ghcr.io/theconner/rustbot-runner:latest
+    outputs:
+      needsupdate: ${{ steps.baseupdatecheck.outputs.needs-updating }}
   do-update:
-    needs: [check-update]
+    needs: [check]
     secrets: inherit
     uses: ./.github/workflows/build-release-container.yaml
     with:
       image_name: rustbot-runner
       image_file: runner.Dockerfile
-    if: steps.baseupdatecheck.outputs.needs-updating == 'true'
+    if: needs.check.outputs.needsupdate == 'true'
