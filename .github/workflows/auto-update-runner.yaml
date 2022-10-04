@@ -9,14 +9,14 @@ jobs:
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v2
-      - name: Check Update
-        id: baseupdatecheck
-        uses: lucacome/docker-image-update-checker@v1.1.0
+      - name: Check if we have to even do all this
+        id: check
+        uses: twiddler/is-my-docker-parent-image-out-of-date@v1
         with:
-          base-image: rust:alpine
-          image: ghcr.io/theconner/rustbot-runner:latest
+          parent-image: rust:alpine
+          my-image: ghcr.io/theconner/rustbot-runner:latest
     outputs:
-      needsupdate: ${{ steps.baseupdatecheck.outputs.needs-updating }}
+      needsupdate: ${{ steps.check.outputs.needs-updating }}
   do-update:
     needs: [check]
     secrets: inherit
