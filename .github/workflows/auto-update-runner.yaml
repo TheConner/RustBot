@@ -1,0 +1,27 @@
+# Automatically rebuild the runner dockerfile if base image changes
+name: Regular base image update check
+on:
+  schedule:
+    - cron: "23 13 3 * *"
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Check Update
+        id: baseupdatecheck
+        uses: lucacome/docker-image-update-checker@v1.1.0
+        with:
+          base-image: rust:alpine
+          image: ghcr.io/theconner/rustbot-runner:latest
+
+      - name: Do Update
+        uses: TheConner/RustBot/.github/workflows/build-release-container.yml@main
+        with:
+          image_name: rustbot-runner
+          image_file: runner.Dockerfile
+        secrets: inherit
+        if: steps.baseupdatecheck.outputs.needs-updating == 'true'
