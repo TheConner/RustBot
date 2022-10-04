@@ -1,6 +1,9 @@
 # Automatically rebuild the runner dockerfile if base image changes
-name: Regular base image update check
+name: Auto update images
 on:
+  schedule:
+    # Random-ish time in the morning
+    - cron: "42 3 * * *"
   workflow_dispatch:
 
 jobs:
@@ -15,8 +18,11 @@ jobs:
         with:
           parent-image: rust:alpine
           my-image: ghcr.io/theconner/rustbot-runner:latest
+      - name: Needs update?
+        run: |
+          echo "Needs to update ${{ steps.check.outputs.out-of-date }}"
     outputs:
-      needsupdate: ${{ steps.check.outputs.needs-updating }}
+      needsupdate: ${{ steps.check.outputs.out-of-date }}
   do-update:
     needs: [check]
     secrets: inherit
