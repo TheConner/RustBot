@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
 
 jobs:
-  check-perform-update:
+  check-update:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
@@ -15,10 +15,11 @@ jobs:
         with:
           base-image: rust:alpine
           image: ghcr.io/theconner/rustbot-runner:latest
-
-      - name: Do Update
-        uses: TheConner/RustBot/.github/workflows/build-release-container.yml@main
-        with:
-          image_name: rustbot-runner
-          image_file: runner.Dockerfile
-        if: steps.baseupdatecheck.outputs.needs-updating == 'true'
+  do-update:
+    needs: [check-update]    
+    secrets: inherit
+    uses: TheConner/RustBot/.github/workflows/build-release-container.yml@main
+    with:
+      image_name: rustbot-runner
+      image_file: runner.Dockerfile
+    if: steps.baseupdatecheck.outputs.needs-updating == 'true'
