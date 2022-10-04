@@ -23,5 +23,4 @@ jobs:
         with:
           image_name: rustbot-runner
           image_file: runner.Dockerfile
-        secrets: inherit
         if: steps.baseupdatecheck.outputs.needs-updating == 'true'
