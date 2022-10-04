@@ -1,12 +1,10 @@
 # Automatically rebuild the runner dockerfile if base image changes
 name: Regular base image update check
 on:
-  schedule:
-    - cron: "23 13 3 * *"
   workflow_dispatch:
 
 jobs:
-  build:
+  check-perform-update:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
