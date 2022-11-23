@@ -8,9 +8,9 @@ on:
       image_file:
         required: true
         type: string
-    secrets:
-      token:
-        required: true
+#    secrets:
+#      token:
+#        required: true
 
 name: Build and Release Container Image
 
