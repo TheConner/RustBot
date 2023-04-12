@@ -1,9 +1,9 @@
 # Automatically rebuild the runner dockerfile if base image changes
 name: Auto update images
 on:
-  schedule:
-    # Random-ish time in the morning
-    - cron: "42 3 * * *"
+  #schedule:
+  #  # Random-ish time in the morning
+  #  - cron: "42 3 * * *"
   workflow_dispatch:
 
 jobs:
